@@ -1,0 +1,590 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Vom Monolithen zu Microservices, ein Erfahrungsbericht</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/white.css">
+    <link rel="stylesheet" href="css/custom_background.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <style>
+        .reveal .controls {
+            visibility: hidden;
+        }
+
+        .notes .reveal .controls {
+            visibility: visible;
+        }
+
+        .img-with-text {
+            text-align: center;
+            float: left;
+            width: 150px;
+            color: grey;
+            margin: 0px 5px !important;
+        }
+
+        .img-with-text p {
+            font-size: 12pt;
+        }
+
+        .img-with-text.active {
+            color: black !important;
+            font-weight: bold;
+        }
+
+        .img-with-text.active img {
+            opacity: 1;
+        }
+
+        .img-with-text img {
+            display: block;
+            margin: 0 200px;
+            opacity: 0.7;
+        }
+    </style>
+
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section data-background-image="img/vortrag_cover.png" data-background-size="500px">
+        </section>
+        <section>
+            <h2>3.300 dm-Märkte</h2>
+            <br>
+            <small>1.800 Deutschland</small>
+            <br/>
+            <small>1.500 Österreich & verbundene Länder</small>
+            </p>
+        </section>
+        <section>
+            <h2>800.000 App Installationen</h2>
+            <br>
+            <small>iOS & Android</small>
+        </section>
+        <section>
+            <h2>1.500.000 Couponing-Requests</h2>
+            <small>pro Tag</small>
+        </section>
+        <section>
+            <h2>14 Microservices</h2>
+            <small>bilden das Couponing-Backend</small>
+        </section>
+        <section>
+            <div>
+                <div class="img-with-text active">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/monolith.png" width="150px">
+                    <p>Entstehung<br/>Monolith</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/wald.png" width="150px">
+                    <p>Microservices<br/>bei dm</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/kompass.png" width="150px">
+                    <p>Der erste PAC<br/>Microservice</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/taverne.png" width="150px">
+                    <p>Lessons Learned</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/dock.png" width="150px">
+                    <p>Ausblick</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/microservices.png"
+                         width="150px">
+                    <p>Fazit</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <section>
+                <h2>Warum sind wir hier?</h2>
+            </section>
+            <section>
+                <img style="border: none; box-shadow:none; background: none" src="img/communication_and_waterfall.png"
+                     height="500px">
+            </section>
+            <section>
+                <h3>Agiler Entwicklungsprozess</h3>
+                <img style="border: none; box-shadow:none; background: none" src="img/agile.png">
+                <ul class="fragment">
+                    <li>Iterative Auslieferung</li>
+                    <li>Kontinuierlicher Feedbackzyklus</li>
+                    <li>Ausrichtung Produktvision</li>
+                </ul>
+            </section>
+            <section>
+                <h3>Hoher Automatisierungsgrad</h3>
+                <small>durch "neue" Technologien</small>
+                <p>
+                <ul class="fragment">
+                    <li>Spring Boot</li>
+                    <li>systemD</li>
+                    <li>Docker</li>
+                    <li>Kubernetes</li>
+                </ul>
+                </p>
+            </section>
+        </section>
+
+        <section>
+            <h3>Das Team</h3>
+            <section>
+                <h2>PAC</h2>
+            </section>
+            <section data-background-image="img/dm_und_synyx.png" data-background-size="600px">
+            </section>
+            <section>
+
+                <img style="border: none; box-shadow:none;" src="img/organisation.png" height="400px">
+            </section>
+        </section>
+
+        <section>
+            <h3>Systemkontext</h3>
+
+            <section style="top:30px">
+
+                <img style="border: none; box-shadow:none; background: none" src="img/system_context_old.png"
+                     height="400px">
+            </section>
+
+            <section style="top:30px">
+                <img style="border: none; box-shadow:none; background: none" src="img/system_context_new.png"
+                     height="500px">
+            </section>
+        </section>
+
+        <section>
+            <h3>Voraussetzungen</h3>
+            <section>
+                <img style="border: none; box-shadow:none; background: none" src="img/zaun.png" height="500px">
+            </section>
+
+            <section>
+                <img style="border: none; box-shadow:none; background: none" src="img/webstack_old.png" height="500px">
+            </section>
+
+            <section>
+                <img style="border: none; box-shadow:none; background: none" src="img/webstack_old_boot.png" height="500px">
+            </section>
+        </section>
+
+        <section>
+            <h3>Modularisierung</h3>
+            <section>
+                <img style="border: none; box-shadow:none; background: none" src="img/system_context_new_splitteds.png"
+                     height="500px">
+            </section>
+
+            <section>
+                <img style="border: none; box-shadow:none; background: none"
+                     src="img/system_context_new_splitted_importer.png"
+                     height="500px">
+            </section>
+        </section>
+        <section>
+            <h2>Und täglich grüßt...</h2>
+            <p >
+              <ul class="fragment">
+                <li> die Wartbarkeit </li>
+                <li> die Erweiterbarkeit </li>
+              </ul>
+            </p>
+        </section>
+        <section>
+            <div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/monolith.png" width="150px">
+                    <p>Entstehung<br/>Monolith</p>
+                </div>
+                <div class="img-with-text active">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/wald.png" width="150px">
+                    <p>Microservices<br/>bei dm</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/kompass.png" width="150px">
+                    <p>Der erste PAC<br/>Microservice</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/taverne.png" width="150px">
+                    <p>Lessons Learned</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/dock.png" width="150px">
+                    <p>Ausblick</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/microservices.png"
+                         width="150px">
+                    <p>Fazit</p>
+                </div>
+            </div>
+        </section>
+        <section>
+            <h3>Die ersten Microservices bei dm</h3>
+            <section>
+                <h2>Homepage/Shop</h2>
+                <small class="fragment">Startschuss der Microservice Architektur bei dm</small>
+            </section>
+            <section>
+                <h2>2 Monolithen</h2>
+            </section>
+            <section>
+                <h2>Spring Cloud</h2>
+                <small class="fragment">Umsetzung der Microservice Architektur Patterns</small>
+            </section>
+            <section>
+                <h3>Service Discovery</h3>
+            </section>
+            <section>
+                <h2>Clientside Loadbalancing</h2>
+            </section>
+            <section>
+                <h2>API Gateway</h2>
+            </section>
+            <section>
+                <h2>Circuitbreaker</h2>
+            </section>
+            <section>
+                <img style="border: none; box-shadow:none;  background:none" src="img/dm_services_arch.png"
+                     height="500px">
+            </section>
+        </section>
+        <section>
+            <h3>Eine schlankere Infrastruktur</h3>
+            <section data-transition="slide-in none">
+                <img style="border: none; box-shadow:none; background: none" data-src="img/webstack_old.png"
+                     height="500px">
+            </section>
+            <section data-transition="none">
+                <img style="border: none; box-shadow:none; background: none" data-src="img/webstack_old_dicarded.png"
+                     height="500px">
+            </section>
+            <section>
+                <img style="border: none; box-shadow:none; background: none" data-src="img/webstack_new.png"
+                     height="300px">
+            </section>
+        </section>
+
+        <section>
+            <div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/monolith.png" width="150px">
+                    <p>Entstehung<br/>Monolith</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/wald.png" width="150px">
+                    <p>Microservices<br/>bei dm</p>
+                </div>
+                <div class="img-with-text active">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/kompass.png" width="150px">
+                    <p>Der erste PAC<br/>Microservice</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/taverne.png" width="150px">
+                    <p>Lessons Learned</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/dock.png" width="150px">
+                    <p>Ausblick</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/microservices.png"
+                         width="150px">
+                    <p>Fazit</p>
+                </div>
+            </div>
+        </section>
+        <section>
+            <h3>Microservices bei PAC</h3>
+            <section>
+                <h2>10 Module</h2>
+                <small>Größe des Monolithen vor Migration</small>
+            </section>
+            <section>
+                <h2>dm Glückskind App</h2>
+                <small>Erster Usecase für PAC Microservice</small>
+            </section>
+            <section>
+                <img data-src="img/gkApp.webp" height="500px">
+            </section>
+            <section>
+                <h2>Migration des Moduls</h2>
+            </section>
+            <section>
+                <h2>End 2 End Tests</h2>
+                <small>Geben Sicherheit<span
+                        class="fragment">… sind aber selbst schwer zu maintainen</span>
+                </small>
+            </section>
+            <section>
+                <h2>Infrastruktur</h2>
+                <small class="fragment">Mit 10 WTFs/Minute unterwegs</span>
+                </small>
+            </section>
+        </section>
+        <section>
+            <h3>Microservices bei PAC</h3>
+            <section>
+                <h2>Der erste Microservice steht</h2>
+            </section>
+            <section>
+                <h2>Aber…</h2>
+                <small class="fragment">Man fühlt sich etwas wie im Blindflug</small>
+            </section>
+            <section>
+                <h2>Metrics</h2>
+            </section>
+            <section>
+                <img style="border: none; box-shadow:none;  background:none" src="img/monitoring_ecke.jpg"
+                     height="500px">
+            </section>
+            <section>
+                <h2>ELK, Actuator, Telegraf, InfluxDB, Grafana</h2>
+            </section>
+        </section>
+        <section>
+            <h3>Einer ist keiner</h3>
+            <section>
+                <h2>Immer mehr Microservices entestehen</h2>
+            </section>
+            <section>
+                <h2>Bedeutung des Monolithen sinkt</h2>
+            </section>
+            <section>
+                <img style="border: none; box-shadow:none;  background:none" src="img/dm_services_arch_2.png"
+                     height="500px">
+            </section>
+            <section>
+                <h2>Finetuning</h2>
+            </section>
+        </section>
+
+        <section>
+            <div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/monolith.png" width="150px">
+                    <p>Entstehung<br/>Monolith</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/wald.png" width="150px">
+                    <p>Microservices<br/>bei dm</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/kompass.png" width="150px">
+                    <p>Der erste PAC<br/>Microservice</p>
+                </div>
+                <div class="img-with-text active">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/taverne.png" width="150px">
+                    <p>Lessons Learned</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/dock.png" width="150px">
+                    <p>Ausblick</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/microservices.png"
+                         width="150px">
+                    <p>Fazit</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h3>Lessons Learned (tech.)</h3>
+
+            <section>
+                <h2>API Gateway Pattern</h2>
+            </section>
+
+            <section>
+                <h2>Dependency Hell</h2>
+            </section>
+
+            <section>
+                <h2>408</h2>
+                <p class="fragment">
+                    <small>Request Timeout</small>
+                </p>
+            </section>
+        </section>
+
+        <section>
+            <h3>Lessons Learned (org.)</h3>
+            <section>
+                <h4>Neues Team für OnlineShop</h4>
+                <img style="border: none; box-shadow:none;" src="img/organisation_devops_shop.png" height="400px">
+            </section>
+
+            <section>
+                <h4>DevOps für den Bereich</h4>
+                <img style="border: none; box-shadow:none;" src="img/organisation_devops_crm.png" height="400px">
+            </section>
+
+            <section>
+                <h4>DevOps Kultur</h4>
+                <img style="border: none; box-shadow:none;" src="img/organisation_devops.png" height="400px">
+            </section>
+        </section>
+        <section>
+            <h3>Benefits</h3>
+
+            <section>
+                <h2>Mehr Macht den Devs</h2>
+            </section>
+
+            <section>
+                <h2>Unabhängige Skalierung</h2>
+            </section>
+
+            <section>
+                <h2>Unabhängiges Deployment</h2>
+            </section>
+
+            <section>
+                <h2>Probleme schneller lokalisierbar</h2>
+            </section>
+
+        </section>
+
+
+        <section>
+            <div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/monolith.png" width="150px">
+                    <p>Entstehung<br/>Monolith</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/wald.png" width="150px">
+                    <p>Microservices<br/>bei dm</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/kompass.png" width="150px">
+                    <p>Der erste PAC<br/>Microservice</p>
+                </div>
+                <div class="img-with-text">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/taverne.png" width="150px">
+                    <p>Lessons Learned</p>
+                </div>
+                <div class="img-with-text active">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/dock.png" width="150px">
+                    <p>Ausblick</p>
+                </div>
+                <div class="img-with-text active">
+                    <img style="border: none; box-shadow:none;  background:none" src="img/microservices.png"
+                         width="150px">
+                    <p>Fazit</p>
+                </div>
+            </div>
+        </section>
+        <section>
+            <h2>Ausblick</h2>
+            <section>
+                <h2 class="fragment">Buzzword Bingo</h2>
+            </section>
+            <section>
+                <h2>Docker</h2>
+            </section>
+            <section>
+                <h2>(Private) Cloud</h2>
+            </section>
+            <section>
+                <h2>Event-Driven Microservices</h2>
+            </section>
+        </section>
+        <section>
+            <h2>Fazit</h2>
+        </section>
+        <section data-background-image="img/vortrag_cover.png" data-background-size="500px">
+        </section>
+
+        <section>
+            Quellen:
+
+            https://www.dm.de/unternehmen/ueber-uns/zahlen-und-fakten/
+        </section>
+    </div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+
+    if (window.self !== window.top) {
+        document.body.className += " notes";
+    }
+    // More info about config & dependencies:
+    // - https://github.com/hakimel/reveal.js#configuration
+    // - https://github.com/hakimel/reveal.js#dependencies
+    Reveal.initialize({
+        //parallaxBackgroundImage: 'img/hintergrund_all.png', // e.g. "https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg"
+
+        //parallaxBackgroundSize: '100%',
+
+        // Number of pixels to move the parallax background per slide
+        // - Calculated automatically unless specified
+        // - Set to 0 to disable movement along an axis
+        //parallaxBackgroundHorizontal: 50,
+        //parallaxBackgroundVertical: 25,
+        slideNumber: true,
+        showSlideNumber: 'speaker',
+        dependencies: [
+            {src: 'plugin/markdown/marked.js'},
+            {src: 'plugin/markdown/markdown.js'},
+            {src: 'plugin/notes/notes.js', async: true},
+            {
+                src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ],
+//        chalkboard: {
+//            // optionally load pre-recorded chalkboard drawing from file
+//            src: "chalkboard.json",
+//            readOnly: false
+//        },
+//        dependencies: [
+//            {src: 'plugin/chalkboard/chalkboard.js'}
+//        ],
+        keyboard: {
+            67: function () {
+                RevealChalkboard.toggleNotesCanvas()
+            },	// toggle notes canvas when 'c' is pressed
+            66: function () {
+                RevealChalkboard.toggleChalkboard()
+            },	// toggle chalkboard when 'b' is pressed
+            46: function () {
+                RevealChalkboard.clear()
+            },	// clear chalkboard when 'DEL' is pressed
+            8: function () {
+                RevealChalkboard.reset()
+            },	// reset chalkboard data on current slide when 'BACKSPACE' is pressed
+            68: function () {
+                RevealChalkboard.download()
+            }	// downlad recorded chalkboard drawing when 'd' is pressed
+        }
+    });
+</script>
+</body>
+</html>
