@@ -1,0 +1,6 @@
+body {
+    background-size: 100%;
+    background-image: url("../img/hintergrund_all.png");
+    background-position: left top;
+    background-repeat: no-repeat;
+}
